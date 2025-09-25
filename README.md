@@ -1,190 +1,190 @@
-Clean Dashboard for WooCommerce 🧹
-Un plugin de WordPress que te permite limpiar y personalizar completamente el dashboard administrativo. Oculta widgets no deseados, promociones molestas y te da control total sobre qué elementos mostrar.
+#Clean Dashboard for WooCommerce# 🧹
 
-✨ Características Principales
-🎯 Control Granular de Widgets
-Detección automática de todos los widgets del dashboard
+A WordPress plugin that allows you to completely clean and customize the admin dashboard. Hide unwanted widgets, annoying promotions, and get full control over which elements to display.
 
-Selección individual por widget (WordPress, WooCommerce, otros plugins)
+✨ Key Features
+🎯 Granular Widget Control
+Automatic detection of all dashboard widgets
 
-Categorización inteligente con interfaz visual
+Individual selection per widget (WordPress, WooCommerce, other plugins)
 
-IDs visibles para fácil identificación
+Smart categorization with visual interface
 
-🛒 Especializado para WooCommerce
-Mantiene widgets esenciales de WooCommerce
+Visible IDs for easy identification
 
-Oculta promociones y upsells molestos
+🛒 WooCommerce Specialized
+Maintains essential WooCommerce widgets
 
-Compatible con tiendas WooCommerce
+Hides annoying promotions and upsells
 
-⚙️ Configuración Flexible
-Aplicación por roles de usuario
+Compatible with WooCommerce stores
 
-Configuración por defecto inteligente
+⚙️ Flexible Configuration
+Apply by user roles
 
-Interfaz amigable y fácil de usar
+Smart default configuration
 
-📦 Instalación
-Método 1: Subida directa
-Descarga el archivo ZIP del plugin
+User-friendly interface
 
-Ve a Plugins > Añadir nuevo > Subir plugin en tu WordPress
+📦 Installation
+Method 1: Direct Upload
+Download the plugin ZIP file
 
-Sube el archivo ZIP y activa el plugin
+Go to Plugins > Add New > Upload Plugin in your WordPress
 
-Método 2: Instalación manual
-Descomprime el archivo ZIP
+Upload the ZIP file and activate the plugin
 
-Sube la carpeta clean-woocommerce-dashboard a /wp-content/plugins/
+Method 2: Manual Installation
+Extract the ZIP file
 
-Activa el plugin en Plugins > Plugins instalados
+Upload the clean-woocommerce-dashboard folder to /wp-content/plugins/
 
-Método 3: Desarrollo
+Activate the plugin in Plugins > Installed Plugins
+
+Method 3: Development
 bash
 cd wp-content/plugins/
-git clone [url-del-repositorio] wp-clean-dashboard
-🚀 Uso Rápido
-Configuración básica
-Activa el plugin en Plugins > Plugins instalados
+git clone [repository-url] clean-woocommerce-dashboard
+🚀 Quick Start
+Basic Configuration
+Activate the plugin in Plugins > Installed Plugins
 
-Ve a Ajustes > Clean Dashboard
+Go to Settings > Clean Dashboard
 
-Selecciona los widgets que quieres mantener visibles
+Select the widgets you want to keep visible
 
-Guarda los cambios y recarga el dashboard
+Save changes and reload the dashboard
 
-Configuración recomendada para WooCommerce
-✅ woocommerce_dashboard_status - Estado de la tienda
+Recommended WooCommerce Setup
+✅ woocommerce_dashboard_status - Store status
 
-✅ woocommerce_dashboard_recent_reviews - Reseñas recientes
+✅ woocommerce_dashboard_recent_reviews - Recent reviews
 
-✅ woocommerce_dashboard_recent_orders - Pedidos recientes
+✅ woocommerce_dashboard_recent_orders - Recent orders
 
-❌ Todos los demás widgets de WordPress
+❌ All other WordPress widgets
 
-❌ Promociones y upsells
+❌ Promotions and upsells
 
-🎛️ Panel de Configuración
-Widgets Permitidos
-Widgets de WooCommerce 🛒: Estado, reseñas, pedidos
+🎛️ Configuration Panel
+Allowed Widgets
+WooCommerce Widgets 🛒: Status, reviews, orders
 
-Widgets de WordPress ⚙️: Actividad, noticias, borradores
+WordPress Widgets ⚙️: Activity, news, drafts
 
-Widgets de otros plugins 🔌: Wordfence, CTX Feed, etc.
+Other Plugin Widgets 🔌: Wordfence, CTX Feed, etc.
 
-Opciones Adicionales
-Aplicar a roles: Selecciona qué roles de usuario verán el dashboard limpio
+Additional Options
+Apply to roles: Select which user roles will see the cleaned dashboard
 
-Ocultar promociones: Elimina upsells y sugerencias de plugins
+Hide promotions: Remove upsells and plugin suggestions
 
-🏗️ Estructura del Proyecto
+🏗️ Project Structure
 text
-wp-clean-dashboard/
-├── clean-dashboard.php          # Archivo principal del plugin
-├── languages/                   # Traducciones (opcional)
+clean-woocommerce-dashboard/
+├── clean-dashboard.php          # Main plugin file
+├── languages/                   # Translations (optional)
 │   └── clean-dashboard-wc-es_ES.po
-├── assets/                      # Recursos (opcional)
+├── assets/                      # Resources (optional)
 │   ├── css/
 │   └── js/
-└── readme.txt                   # Este archivo
-🔧 Personalización Avanzada
-Filtros disponibles
+└── README.md                    # This file
+🔧 Advanced Customization
+Available Filters
 php
-// Modificar widgets permitidos por defecto
+// Modify default allowed widgets
 add_filter('clean_dashboard_default_widgets', function($widgets) {
-    $widgets[] = 'mi_widget_personalizado';
+    $widgets[] = 'my_custom_widget';
     return $widgets;
 });
 
-// Modificar roles permitidos
+// Modify allowed roles
 add_filter('clean_dashboard_allowed_roles', function($roles) {
     $roles[] = 'editor';
     return $roles;
 });
-Hooks disponibles
+Available Hooks
 php
-// Antes de limpiar el dashboard
+// Before cleaning the dashboard
 add_action('clean_dashboard_before_cleanup', function() {
-    // Tu código aquí
+    // Your code here
 });
 
-// Después de limpiar el dashboard  
+// After cleaning the dashboard  
 add_action('clean_dashboard_after_cleanup', function() {
-    // Tu código aquí
+    // Your code here
 });
-🐛 Solución de Problemas
-Widgets no se ocultan
-Verifica que el plugin esté activado
+🐛 Troubleshooting
+Widgets Not Hiding
+Verify the plugin is activated
 
-Revisa la configuración en Ajustes > Clean Dashboard
+Check configuration in Settings > Clean Dashboard
 
-Asegúrate de que tu rol de usuario esté seleccionado
+Ensure your user role is selected
 
-Error "Error loading widget"
-El plugin usa prioridades correctas para cargar después de WooCommerce
+"Error loading widget" Message
+The plugin uses correct priorities to load after WooCommerce
 
-Verifica que WooCommerce esté actualizado
+Verify WooCommerce is updated
 
-No se detectan todos los widgets
-Guarda la configuración y recarga la página
+Not All Widgets Detected
+Save configuration and reload the page
 
-Algunos widgets pueden cargarse dinámicamente
+Some widgets may load dynamically
 
 📋 Changelog
-Versión 2.0 (Actual)
-✅ Detección automática de todos los widgets
+Version 2.0 (Current)
+✅ Automatic detection of all widgets
 
-✅ Selección individual por widget
+✅ Individual widget selection
 
-✅ Interfaz categorizada y mejorada
+✅ Categorized and improved interface
 
-✅ Soporte para Wordfence, CTX Feed y otros plugins
+✅ Support for Wordfence, CTX Feed and other plugins
 
-Versión 1.3
-✅ Corrección de errores en widgets de WooCommerce
+Version 1.3
+✅ Fixed WooCommerce widget errors
 
-✅ Mejor prioridad de ejecución
+✅ Improved execution priority
 
-✅ Detección de dependencias
+✅ Dependency detection
 
-Versión 1.2
-✅ Soporte para ocultar widget de Elementor
+Version 1.2
+✅ Support for hiding Elementor widget
 
-✅ Notificaciones de estado mejoradas
+✅ Improved status notifications
 
-🤝 Contribuir
-Las contribuciones son bienvenidas. Por favor:
+🤝 Contributing
+Contributions are welcome. Please:
 
-Haz un fork del proyecto
+Fork the project
 
-Crea una rama para tu feature (git checkout -b feature/AmazingFeature)
+Create a feature branch (git checkout -b feature/AmazingFeature)
 
-Commit tus cambios (git commit -m 'Add some AmazingFeature')
+Commit your changes (git commit -m 'Add some AmazingFeature')
 
-Push a la rama (git push origin feature/AmazingFeature)
+Push to the branch (git push origin feature/AmazingFeature)
 
-Abre un Pull Request
+Open a Pull Request
 
-📝 Licencia
-Este proyecto está licenciado bajo la licencia GPL v2 o posterior. Ver el archivo LICENSE para más detalles.
+📝 License
+This project is licensed under the GPL v2 or later license. See the LICENSE file for details.
 
-🙋‍♂️ Soporte
-Si necesitas ayuda:
+🙋‍♂️ Support
+If you need help:
 
-Revisa la sección de solución de problemas arriba
+Check the troubleshooting section above
 
-Abre un issue en GitHub
+Open an issue on GitHub
 
-Contacta al desarrollador
+Contact the developer
 
-🏆 Créditos
-Desarrollado por Estratos con ❤️ para la comunidad de WordPress y WooCommerce.
+🏆 Credits
+Developed with ❤️ for the WordPress and WooCommerce community.
 
-¿Te gusta este plugin? ¡Dale una estrella ⭐ en GitHub!
+Like this plugin? Give it a star ⭐ on GitHub!
 
-📞 ¿Necesitas personalizaciones?
-Si necesitas funcionalidades específicas para tu proyecto, contáctame para desarrollar una versión personalizada del plugin.
+📞 Need Customizations?
+If you need specific functionalities for your project, contact me to develop a customized version of the plugin.
 
-¡Dashboard limpio, mente enfocada! 🚀
-
+Clean dashboard, focused mind! 🚀
