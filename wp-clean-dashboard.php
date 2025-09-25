@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Clean Dashboard for WooCommerce
  * Description: Oculta todos los widgets del dashboard excepto los de WooCommerce. Incluye panel de configuración.
- * Version: 1.1
+ * Version: 1.2
  * Author: Estratos
  * Text Domain: clean-dashboard-wc
  */
@@ -25,6 +25,9 @@ class CleanWooCommerceDashboard {
         
         // Cargar traducciones
         add_action('plugins_loaded', array($this, 'load_textdomain'));
+        
+        // Ocultar widget de Elementor específicamente
+        add_action('wp_dashboard_setup', array($this, 'remove_elementor_widget'), 100);
     }
     
     /**
@@ -93,6 +96,15 @@ class CleanWooCommerceDashboard {
             'hide_upsells', 
             __('Ocultar Promociones y Upsells', 'clean-dashboard-wc'), 
             array($this, 'hide_upsells_render'), 
+            'clean_dashboard_wc', 
+            'clean_dashboard_wc_section'
+        );
+        
+        // Campo para Elementor
+        add_settings_field(
+            'hide_elementor_widget', 
+            __('Ocultar Widget de Elementor', 'clean-dashboard-wc'), 
+            array($this, 'hide_elementor_widget_render'), 
             'clean_dashboard_wc', 
             'clean_dashboard_wc_section'
         );
@@ -167,6 +179,19 @@ class CleanWooCommerceDashboard {
     }
     
     /**
+     * Campo para ocultar widget de Elementor
+     */
+    public function hide_elementor_widget_render() {
+        $options = get_option('clean_dashboard_wc_options');
+        $value = isset($options['hide_elementor_widget']) ? $options['hide_elementor_widget'] : 1;
+        ?>
+        <input type="checkbox" name="clean_dashboard_wc_options[hide_elementor_widget]" value="1" <?php checked(1, $value, true); ?>>
+        <label for="clean_dashboard_wc_options[hide_elementor_widget]"><?php _e('Ocultar widget "Conoce Elementor"', 'clean-dashboard-wc'); ?></label>
+        <p class="description"><?php _e('Remove el widget de promoción de Elementor Pro del dashboard', 'clean-dashboard-wc'); ?></p>
+        <?php
+    }
+    
+    /**
      * Campo para roles de usuario
      */
     public function apply_to_roles_render() {
@@ -199,6 +224,9 @@ class CleanWooCommerceDashboard {
             <div style="background: #fff; padding: 20px; margin: 20px 0; border-left: 4px solid #0073aa;">
                 <h3><?php _e('Estado del Plugin', 'clean-dashboard-wc'); ?></h3>
                 <p><?php _e('El plugin está activo y limpiando el dashboard según la configuración actual.', 'clean-dashboard-wc'); ?></p>
+                <p><strong><?php _e('Widgets detectados:', 'clean-dashboard-wc'); ?></strong> 
+                    <?php echo $this->get_detected_widgets_list(); ?>
+                </p>
             </div>
             
             <form action="options.php" method="post">
@@ -215,11 +243,32 @@ class CleanWooCommerceDashboard {
                     <li><?php _e('Elimina widgets innecesarios del dashboard', 'clean-dashboard-wc'); ?></li>
                     <li><?php _e('Mantiene solo los widgets esenciales de WooCommerce', 'clean-dashboard-wc'); ?></li>
                     <li><?php _e('Oculta promociones y upsells molestos', 'clean-dashboard-wc'); ?></li>
+                    <li><?php _e('Oculta el widget "Conoce Elementor"', 'clean-dashboard-wc'); ?></li>
                     <li><?php _e('Mejora la experiencia del usuario en el admin', 'clean-dashboard-wc'); ?></li>
                 </ul>
             </div>
         </div>
         <?php
+    }
+    
+    /**
+     * Obtener lista de widgets detectados
+     */
+    private function get_detected_widgets_list() {
+        global $wp_meta_boxes;
+        $widgets = array();
+        
+        if (isset($wp_meta_boxes['dashboard'])) {
+            foreach ($wp_meta_boxes['dashboard'] as $context => $priority_array) {
+                foreach ($priority_array as $priority => $widget_array) {
+                    foreach ($widget_array as $widget_id => $widget_data) {
+                        $widgets[] = $widget_id;
+                    }
+                }
+            }
+        }
+        
+        return implode(', ', array_slice($widgets, 0, 10)) . (count($widgets) > 10 ? '...' : '');
     }
     
     /**
@@ -233,6 +282,43 @@ class CleanWooCommerceDashboard {
         $allowed_roles = isset($options['apply_to_roles']) ? $options['apply_to_roles'] : array('administrator', 'shop_manager');
         
         return array_intersect($allowed_roles, $user->roles);
+    }
+    
+    /**
+     * Remover widget de Elementor específicamente
+     */
+    public function remove_elementor_widget() {
+        if (!$this->should_apply_cleaning()) {
+            return;
+        }
+        
+        $options = get_option('clean_dashboard_wc_options');
+        
+        // Ocultar widget de Elementor si está activada la opción
+        if (isset($options['hide_elementor_widget']) && $options['hide_elementor_widget']) {
+            // Método 1: Remover por ID del widget
+            remove_meta_box('e-dashboard-overview', 'dashboard', 'normal');
+            
+            // Método 2: Remover por clase CSS (como respaldo)
+            add_action('admin_head', array($this, 'hide_elementor_css'));
+            
+            // Método 3: Deshabilitar el widget via filtro
+            add_filter('elementor/admin/dashboard_overview_widget', '__return_false');
+        }
+    }
+    
+    /**
+     * CSS para ocultar widget de Elementor
+     */
+    public function hide_elementor_css() {
+        echo '<style>
+            #e-dashboard-overview,
+            .e-dashboard-overview,
+            [class*="elementor-dashboard-overview"],
+            .postbox[id*="elementor"] {
+                display: none !important;
+            }
+        </style>';
     }
     
     /**
@@ -306,7 +392,9 @@ class CleanWooCommerceDashboard {
             .woocommerce-message[data-message-id*="marketing"],
             .woocommerce-marketing-notifications-panel,
             a[href*="wc-addons"],
-            .woocommerce-admin-page .woocommerce-store-alerts {
+            .woocommerce-admin-page .woocommerce-store-alerts,
+            #e-dashboard-overview,
+            .e-dashboard-overview {
                 display: none !important;
             }
         </style>';
@@ -344,9 +432,34 @@ function clean_dashboard_wc_activate() {
         'hide_wp_widgets' => 1,
         'woocommerce_widgets' => array('status', 'reviews'),
         'hide_upsells' => 1,
+        'hide_elementor_widget' => 1,
         'apply_to_roles' => array('administrator', 'shop_manager')
     );
     
     add_option('clean_dashboard_wc_options', $default_options);
+}
+
+/**
+ * Detectar si Elementor está activo
+ */
+function clean_dashboard_wc_is_elementor_active() {
+    return did_action('elementor/loaded');
+}
+
+/**
+ * Añadir detección de Elementor en el admin
+ */
+add_action('admin_notices', 'clean_dashboard_wc_elementor_notice');
+function clean_dashboard_wc_elementor_notice() {
+    if (clean_dashboard_wc_is_elementor_active()) {
+        $options = get_option('clean_dashboard_wc_options');
+        $hide_elementor = isset($options['hide_elementor_widget']) ? $options['hide_elementor_widget'] : 1;
+        
+        if ($hide_elementor) {
+            echo '<div class="notice notice-success is-dismissible">
+                <p>✅ ' . __('Clean Dashboard: Widget de Elementor será ocultado según tu configuración.', 'clean-dashboard-wc') . '</p>
+            </div>';
+        }
+    }
 }
 ?>
